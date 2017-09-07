@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Pizza.h"
 #import "Kitchen.h"
+#define pizzaSizeString(enum) [@[@"small",@"medium",@"large"] objectAtIndex:enum]
 
 int main(int argc, const char * argv[])
 {
@@ -46,7 +47,7 @@ int main(int argc, const char * argv[])
             
             // And then send some message to the kitchen...
             Pizza *order = [[Pizza alloc] initWithSize:size and:[commandWords objectAtIndex:1]];
-            NSLog(@"Order was %u %@", order.pizzaSize, order.pizzaToppings);
+            NSLog(@"Order was %@ %@", pizzaSizeString(order.pizzaSize), order.pizzaToppings);
             
         }
     }

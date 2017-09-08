@@ -10,13 +10,20 @@
 
 @implementation Pizza
 
-//Create an init method that will take a size and an array of toppings, and have that method set the internal values of the object when it is initialized.
+- (instancetype)initWithSize:(PizzaSize)size toppings:(NSArray<NSString*>*)toppings
+{
+    self = [super init];
+    if (self) {
+        _size = size;
+        _toppings = toppings;
+    }
+    return self;
+}
 
--(instancetype)initWithSize:(PizzaSize)size and:(NSArray *)toppings {
-    if (self = [super init]){
-        _pizzaSize = size;
-        _pizzaToppings = toppings;
-    }return self;
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"Pizza with %@",
+            [self.toppings componentsJoinedByString:@", "]];
 }
 
 @end

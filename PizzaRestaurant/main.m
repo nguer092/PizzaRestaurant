@@ -7,50 +7,69 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Pizza.h"
+
 #import "Kitchen.h"
-#define pizzaSizeString(enum) [@[@"small",@"medium",@"large"] objectAtIndex:enum]
+#import "Pizza.h"
+#import "HappyManager.h"
+#import "Manager.h"
 
 int main(int argc, const char * argv[])
 {
+    
     @autoreleasepool {
         
-        NSLog(@"Please pick your pizza size and toppings:");
+        NSLog(@"Hello,welcome to the Pizza Place. You order will be a size and toppigns.");
         
-//        Kitchen *restaurantKitchen = [Kitchen new];
-        
+        Kitchen *restaurantKitchen = [Kitchen new];
+        Manager *jerk = [[Manager alloc] init];
+        HappyManager *nice = [[HappyManager alloc] init];
+        id activeManager = nil;
         while (TRUE) {
             // Loop forever
             
-            NSLog(@"> ");
+            // Select manager
+            printf("Manager (nice/jerk/none)> ");
             char str[100];
             fgets (str, 100, stdin);
             
             NSString *inputString = [[NSString alloc] initWithUTF8String:str];
             inputString = [inputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if ([inputString isEqualToString:@"jerk"]) {
+                activeManager = jerk;
+            } else if ([inputString isEqualToString:@"nice"]) {
+                activeManager = nice;
+            } else {
+                activeManager = nil;
+            }
+            restaurantKitchen.delegate = activeManager;
             
-            NSLog(@"Input was %@", inputString);
+            // Pizza size
+            printf("What's your order? > ");
+            fgets (str, 100, stdin);
+            
+            inputString = [[NSString alloc] initWithUTF8String:str];
+            inputString = [inputString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            
+         
             
             // Take the first word of the command as the size, and the rest as the toppings
             NSArray *commandWords = [inputString componentsSeparatedByString:@" "];
             
-            NSString *userInputtedSize = [commandWords objectAtIndex:0];
+            NSString *sizeStr = commandWords[0];
+            PizzaSize size = [Kitchen parsePizzaSize:sizeStr];
             
-            PizzaSize size;
-            if ([userInputtedSize isEqualToString:@"small"]) {
-                size = small;
-            } else if ([userInputtedSize isEqualToString:@"medium"]) {
-                size = medium;
-            } else {
-                size = large;
-            }
+            NSArray<NSString*>* toppings = [commandWords subarrayWithRange:NSMakeRange(1, [commandWords count] - 1)];
             
+         
             // And then send some message to the kitchen...
-            Pizza *order = [[Pizza alloc] initWithSize:size and:[commandWords objectAtIndex:1]];
-            NSLog(@"Order was %@ %@", pizzaSizeString(order.pizzaSize), order.pizzaToppings);
-            
+            Pizza *pizza = [restaurantKitchen makePizzaWithSize:size toppings:toppings];
+            NSLog(@"Pizza! %@", pizza);
+         
         }
+        
     }
     return 0;
 }
+
+
 
